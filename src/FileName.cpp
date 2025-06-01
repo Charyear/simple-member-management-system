@@ -23,14 +23,17 @@ struct Member {
     double consumption;
     int points;
 
+    // Ä¬ÈÏ¹¹Ôìº¯Êý
     Member() : id(0), name(""), type("Silver"), consumption(0.0), points(0) {}
 
+    // ´ø²ÎÊýµÄ¹¹Ôìº¯Êý
     Member(int mid, std::string mname, std::string mtype, double mconsumption)
         : id(mid), name(mname), type(mtype), consumption(mconsumption) {
         points = calculatePoints(mconsumption);
     }
-
+    // »ý·Ö¼ÆËãº¯Êý£º¸ù¾ÝÏû·Ñ½ð¶î¼ÆËã»ý·Ö
     int calculatePoints(double consumptionAmount) {
+        // Ïû·Ñ 1 Ôª£¬»ñµÃ 10 »ý·Ö,ÈôÏû·Ñ²»×ã 1 Ôª£¬°´ 1 Ôª¼ÆËã
         return static_cast<int>(std::ceil(consumptionAmount) * 10);
     }
 };
@@ -54,24 +57,27 @@ bool isButtonHovered(int x1, int y1, int x2, int y2, MOUSEMSG msg) {
 }
 
 void drawButton(int x1, int y1, int x2, int y2, const char* label, bool isHovered) {
+    // ¸ù¾ÝÊó±êÐüÍ£×´Ì¬¸Ä±ä°´Å¥ÑÕÉ«
     if (isHovered) {
-        setfillcolor(LIGHTGRAY);
-        bar(x1, y1, x2, y2);
+        setfillcolor(LIGHTGRAY);  // ÐüÍ£Ê±°´Å¥ÑÕÉ«
+        bar(x1, y1, x2, y2);      // »æÖÆ°´Å¥±³¾°
     }
     else {
-        setfillcolor(WHITE);
+        setfillcolor(WHITE);      // Ä¬ÈÏ°´Å¥ÑÕÉ«
         bar(x1, y1, x2, y2);
     }
-    setlinecolor(BLACK);
-    rectangle(x1, y1, x2, y2);
+    setlinecolor(BLACK);          // °´Å¥±ß¿òÑÕÉ«
+    rectangle(x1, y1, x2, y2);    // »æÖÆ°´Å¥±ß¿ò
 
+    // ÉèÖÃÎÄ×ÖÑÕÉ«Îª»ÆÉ«
     settextcolor(BLACK);
     int textWidth = textwidth(label);
     int textHeight = textheight(label);
-    setbkmode(TRANSPARENT);
-    outtextxy(x1 + (x2 - x1 - textWidth) / 2, y1 + (y2 - y1 - textHeight) / 2, label);
+    setbkmode(TRANSPARENT);       // ÉèÖÃÎÄ×Ö±³¾°Í¸Ã÷
+    outtextxy(x1 + (x2 - x1 - textWidth) / 2, y1 + (y2 - y1 - textHeight) / 2, label);  // »æÖÆ°´Å¥ÎÄ×Ö
 }
 
+// »æÖÆÊäÈë¿ò
 void drawInputBox(int left, int top, int width, int height, const char* content) {
     setfillstyle(SOLID_FILL, WHITE);
     bar(left, top, left + width, top + height);
@@ -81,165 +87,895 @@ void drawInputBox(int left, int top, int width, int height, const char* content)
 
 void updateMemberType(Member& member) {
     if (member.consumption >= 400) {
-        member.type = "Gold";
+        member.type = "Gold";  // Change to Gold if consumption > 400
     }
     else {
-        member.type = "Silver";
+        member.type = "Silver";  // Otherwise, it stays Silver
     }
 }
 
 void addMember() {
     cleardevice();
     putimage(0, 0, &image);
+    // ÊäÈë¿òºÍ°´Å¥²ÎÊý
     int inputBoxWidth = 200;
     int inputBoxHeight = 30;
     int startX = 300;
     int idY = 100, nameY = 200, typeY = 300, consumptionY = 400;
     int buttonWidth = 100, buttonHeight = 50;
-    int registerX = startX + (inputBoxWidth - buttonWidth) / 2;
+    int registerX = startX + (inputBoxWidth - buttonWidth) / 2; // ¾ÓÖÐ¶ÔÆëÊäÈë¿ò
     int registerY = consumptionY + inputBoxHeight + 50;
 
+    // ÊäÈëÄÚÈÝ
     std::string idInput = "", nameInput = "", typeInput = "";
-    double consumptionInput = 0.0;
+    double consumptionInput = 0.0;  // Default consumption amount
 
     bool idBoxActive = false, nameBoxActive = false, typeBoxActive = false, consumptionBoxActive = false;
 
     while (true) {
-        BeginBatchDraw();
+        BeginBatchDraw(); // ¿ªÆôË«»º³å
         cleardevice();
         putimage(0, 0, &image);
 
-        settextstyle(50, 0, "å¾®è½¯é›…é»‘");
-        outtextxy(220, 40, "ç®€å•ä¼šå‘˜ç®¡ç†ç³»ç»Ÿ");
+        // »æÖÆ±êÌâºÍ¾²Ì¬½çÃæ
+        settextstyle(50, 0, "»ªÎÄÐÂÎº"); // ÉèÖÃ±êÌâ×ÖÌåºÍ´óÐ¡
+        outtextxy(220, 40, "¼òµ¥»áÔ±¹ÜÀíÏµÍ³");
+        // »Ö¸´Ä¬ÈÏÑùÊ½
         settextstyle(20, 0, "Arial");
-        outtextxy(startX - 40, idY + 25, "ä¼šå‘˜ID:");
-        outtextxy(startX - 40, nameY + 25, "ä¼šå‘˜å§“å:");
-        outtextxy(startX - 40, typeY + 25, "ä¼šå‘˜ç±»åž‹:");
-        outtextxy(startX - 40, consumptionY + 25, "æ¶ˆè´¹é‡‘é¢:");
+        outtextxy(startX - 40, idY + 25, "»áÔ±ID:");
+        outtextxy(startX - 40, nameY + 25, "»áÔ±ÐÕÃû:");
+        outtextxy(startX - 40, typeY + 25, "»áÔ±ÀàÐÍ:");
+        outtextxy(startX - 40, consumptionY + 25, "Ïû·Ñ½ð¶î:");
 
+        // Input boxes
         drawInputBox(startX + 60, idY + 20, inputBoxWidth, inputBoxHeight, idInput.c_str());
         drawInputBox(startX + 60, nameY + 20, inputBoxWidth, inputBoxHeight, nameInput.c_str());
         drawInputBox(startX + 60, typeY + 20, inputBoxWidth, inputBoxHeight, typeInput.c_str());
 
+        // Consumption input box
         char consumptionStr[50];
-        sprintf_s(consumptionStr, "%.2f", consumptionInput);
+        sprintf_s(consumptionStr, "%.2f", consumptionInput); // Format consumption input
         drawInputBox(startX + 60, consumptionY + 20, inputBoxWidth, inputBoxHeight, consumptionStr);
 
+        // °´Å¥×´Ì¬
         MOUSEMSG msg = GetMouseMsg();
         bool registerHovered = isButtonHovered(registerX, registerY, registerX + buttonWidth, registerY + buttonHeight, msg);
         bool returnHovered = isButtonHovered(650, 500, 750, 550, msg);
 
-        drawButton(registerX + 10, registerY, registerX + buttonWidth, registerY + buttonHeight, "æ³¨å†Œ", registerHovered);
-        drawButton(650, 500, 750, 550, "è¿”å›ž", returnHovered);
+        // »æÖÆ°´Å¥£¬¸üÐÂÑÕÉ«
+        drawButton(registerX + 10, registerY, registerX + buttonWidth, registerY + buttonHeight, "×¢²á", registerHovered);
+        drawButton(650, 500, 750, 550, "·µ»Ø", returnHovered);
 
+        // ¼ì²éÊó±êµã»÷ÊÂ¼þ
         if (msg.uMsg == WM_LBUTTONDOWN) {
             char temp[50] = "";
 
+            // ÊäÈë¿ò´¦ÀíÂß¼­
             if (msg.x >= startX && msg.x <= startX + inputBoxWidth) {
                 if (msg.y >= idY && msg.y <= idY + inputBoxHeight) {
-                    InputBox(temp, 7, "è¯·è¾“å…¥ä¼šå‘˜ IDï¼ˆ6 ä½æ•°å­—ï¼‰ï¼š");
+                    InputBox(temp, 7, "ÇëÊäÈë»áÔ± ID£¨6 Î»Êý×Ö£©£º");
                     if (strlen(temp) > 0 && isSixDigitNumber(atoi(temp))) {
                         idInput = temp;
                         idBoxActive = true;
                     }
                     else {
-                        MessageBox(GetHWnd(), "ä¼šå‘˜ ID å¿…é¡»æ˜¯ 6 ä½æ•°å­—ï¼", "é”™è¯¯", MB_OK);
+                        MessageBox(GetHWnd(), "»áÔ± ID ±ØÐëÊÇ 6 Î»Êý×Ö£¡", "´íÎó", MB_OK);
                     }
                 }
                 else if (msg.y >= nameY && msg.y <= nameY + inputBoxHeight) {
-                    InputBox(temp, 50, "è¯·è¾“å…¥ä¼šå‘˜å§“åï¼š");
+                    InputBox(temp, 50, "ÇëÊäÈë»áÔ±ÐÕÃû£º");
                     if (strlen(temp) > 0) {
                         nameInput = temp;
                         nameBoxActive = true;
                     }
                     else {
-                        MessageBox(GetHWnd(), "å§“åä¸èƒ½ä¸ºç©ºï¼", "é”™è¯¯", MB_OK);
+                        MessageBox(GetHWnd(), "ÐÕÃû²»ÄÜÎª¿Õ£¡", "´íÎó", MB_OK);
                     }
                 }
                 else if (msg.y >= typeY && msg.y <= typeY + inputBoxHeight) {
-                    InputBox(temp, 10, "è¯·è¾“å…¥ä¼šå‘˜ç±»åž‹ï¼ˆGold/Silverï¼‰ï¼š");
+                    InputBox(temp, 10, "ÇëÊäÈë»áÔ±ÀàÐÍ£¨Gold/Silver£©£º");
                     if (std::string(temp) == "Gold" || std::string(temp) == "Silver") {
                         typeInput = temp;
                         typeBoxActive = true;
                     }
                     else {
-                        MessageBox(GetHWnd(), "ä¼šå‘˜ç±»åž‹æ— æ•ˆï¼Œè¯·è¾“å…¥ Gold æˆ– Silverï¼", "é”™è¯¯", MB_OK);
+                        MessageBox(GetHWnd(), "»áÔ±ÀàÐÍÎÞÐ§£¡ÇëÊäÈë Gold »ò Silver¡£", "´íÎó", MB_OK);
                     }
                 }
                 else if (msg.y >= consumptionY && msg.y <= consumptionY + inputBoxHeight) {
-                    InputBox(temp, 50, "è¯·è¾“å…¥æ¶ˆè´¹é‡‘é¢");
-                    consumptionInput = atof(temp);
+                    InputBox(temp, 50, "ÇëÊäÈëÏû·Ñ½ð¶î£º");
+                    consumptionInput = atof(temp); // Convert input to a floating-point number
                     consumptionBoxActive = true;
                 }
             }
 
+            // ×¢²á°´Å¥Âß¼­
             if (isButtonClicked(registerX, registerY, registerX + buttonWidth, registerY + buttonHeight, msg)) {
                 if (idInput.empty() || nameInput.empty() || typeInput.empty()) {
-                    MessageBox(GetHWnd(), "æ‰€æœ‰å­—æ®µä¸èƒ½ä¸ºç©ºï¼", "é”™è¯¯", MB_OK);
+                    MessageBox(GetHWnd(), "ËùÓÐ×Ö¶Î²»ÄÜÎª¿Õ£¡", "´íÎó", MB_OK);
                 }
                 else {
+                    // Update the member type based on consumption
                     Member newMember(atoi(idInput.c_str()), nameInput, typeInput, consumptionInput);
-                    updateMemberType(newMember);
-                    members.push_back(newMember);
-                    MessageBox(GetHWnd(), "ä¼šå‘˜æ³¨å†ŒæˆåŠŸï¼", "æˆåŠŸ", MB_OK);
-                    break;
+                    updateMemberType(newMember);  // Update type based on consumption
+
+                    // MySQL ²Ù×÷
+                    MYSQL* con = mysql_init(nullptr);
+                    mysql_options(con, MYSQL_SET_CHARSET_NAME, "utf8mb4");
+                    if (con && mysql_real_connect(con, host, user, pw, database_name, port, nullptr, 0)) {
+                        // ¼ì²éÖØ¸´ ID
+                        char checkQuery[128];
+                        snprintf(checkQuery, sizeof(checkQuery),
+                            "SELECT COUNT(*) FROM members WHERE id = '%s'", idInput.c_str());
+                        if (mysql_query(con, checkQuery) == 0) {
+                            MYSQL_RES* res = mysql_store_result(con);
+                            if (res) {
+                                MYSQL_ROW row = mysql_fetch_row(res);
+                                if (atoi(row[0]) > 0) {
+                                    MessageBox(GetHWnd(), "»áÔ± ID ÒÑ´æÔÚ£¬ÇëÖØÐÂÊäÈë£¡", "´íÎó", MB_OK);
+                                    mysql_free_result(res);
+                                    mysql_close(con);
+                                    continue;
+                                }
+                                mysql_free_result(res);
+                            }
+                        }
+                        else {
+                            MessageBox(GetHWnd(), mysql_error(con), "Êý¾Ý¿â²éÑ¯´íÎó", MB_OK);
+                            mysql_close(con);
+                            continue;
+                        }
+
+                        // ²åÈë»áÔ±ÐÅÏ¢
+                        char query[256];
+                        snprintf(query, sizeof(query),
+                            "INSERT INTO members (id, name, type, consumption) VALUES ('%s', '%s', '%s', %.2f)",
+                            idInput.c_str(), nameInput.c_str(), newMember.type.c_str(), newMember.consumption);
+                        if (mysql_query(con, query)) {
+                            MessageBox(GetHWnd(), mysql_error(con), "Êý¾Ý¿â²åÈë´íÎó", MB_OK);
+                        }
+                        else {
+                            MessageBox(GetHWnd(), "×¢²á³É¹¦£¡¼´½«·µ»ØÖ÷Ò³Ãæ.....", "³É¹¦", MB_OK);
+                            mysql_close(con);
+                            return;
+                        }
+                        mysql_close(con);
+                    }
+                    else {
+                        MessageBox(GetHWnd(), "ÎÞ·¨Á¬½Óµ½Êý¾Ý¿â£¡", "´íÎó", MB_OK);
+                    }
                 }
             }
 
+            // Return °´Å¥Âß¼­
             if (isButtonClicked(650, 500, 750, 550, msg)) {
-                break;
+                return;
             }
         }
 
-        FlushBatchDraw();
+        EndBatchDraw(); // ¸üÐÂ½çÃæ
     }
-    EndBatchDraw();
 }
 
-int main() {
-    initgraph(800, 600);
-    loadimage(&image, "image.png", 800, 600);
-    HWND hwnd = GetHWnd();
-    SetWindowText(hwnd, "ç®€å•ä¼šå‘˜ç®¡ç†ç³»ç»Ÿ");
-    HICON hIcon = (HICON)LoadImage(NULL, APP_ICON, IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
-    SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
-    SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+
+void displayMembers(const std::string& name = "", int currentPage = 1) {
+    cleardevice();
+    putimage(0, 0, &image);
+
+    const int recordsPerPage = 10;  // Ã¿Ò³ÏÔÊ¾µÄ¼ÇÂ¼Êý
+    int totalRecords = 0;           // ×Ü¼ÇÂ¼Êý
+    int totalPages = 0;             // ×ÜÒ³Êý
+
+    // »æÖÆ°´Å¥
+    drawButton(650, 500, 750, 550, "·µ»Ø", false);
+    drawButton(550, 500, 650, 550, "ËÑË÷", false);  // ²éÕÒ°´Å¥
+    drawButton(150, 500, 250, 550, "ÉÏÒ»Ò³", false);  // ÉÏÒ»Ò³°´Å¥
+    drawButton(300, 500, 400, 550, "ÏÂÒ»Ò³", false);  // ÏÂÒ»Ò³°´Å¥
+
+    // ±í¸ñ²ÎÊý
+    int windowWidth = getwidth();
+    int idColumnWidth = 100;   // IDÁÐ¿í
+    int nameColumnWidth = 200; // NameÁÐ¿í
+    int typeColumnWidth = 100; // TypeÁÐ¿í
+    int consumptionColumnWidth = 150; // Ïû·Ñ½ð¶îÁÐ¿í
+    int pointsColumnWidth = 100; // »ý·ÖÁÐ¿í
+    int rowHeight = 30;        // ÐÐ¸ß
+    int startX = (windowWidth - (idColumnWidth + nameColumnWidth + typeColumnWidth + consumptionColumnWidth + pointsColumnWidth)) / 2;
+    int startY = 50;           // ±í¸ñÆðÊ¼Y×ø±ê
+    setlinecolor(BLACK);
+
+    // Ìí¼Ó±êÌâ
+    settextstyle(45, 0, "»ªÎÄÐÂÎº");
+    settextcolor(BLACK);
+    outtextxy(260, 0, "»áÔ±¹ÜÀíÏµÍ³");
+    settextstyle(20, 0, "Arial");  // »Ö¸´Ä¬ÈÏÑùÊ½
+
+    // »æÖÆ±êÌâÐÐ
+    rectangle(startX, startY + 30, startX + idColumnWidth + nameColumnWidth + typeColumnWidth + consumptionColumnWidth + pointsColumnWidth, startY + rowHeight + 30);
+    outtextxy(startX + (idColumnWidth - textwidth("ID")) / 2, startY + (rowHeight - textheight("ID")) / 2 + 30, "ID");
+    outtextxy(startX + idColumnWidth + (nameColumnWidth - textwidth("ÐÕÃû")) / 2, startY + (rowHeight - textheight("ÐÕÃû")) / 2 + 30, "ÐÕÃû");
+    outtextxy(startX + idColumnWidth + nameColumnWidth + (typeColumnWidth - textwidth("ÀàÐÍ")) / 2, startY + (rowHeight - textheight("ÀàÐÍ")) / 2 + 30, "ÀàÐÍ");
+    outtextxy(startX + idColumnWidth + nameColumnWidth + typeColumnWidth + (consumptionColumnWidth - textwidth("Ïû·Ñ½ð¶î")) / 2, startY + (rowHeight - textheight("Ïû·Ñ½ð¶î")) / 2 + 30, "Ïû·Ñ½ð¶î");
+    outtextxy(startX + idColumnWidth + nameColumnWidth + typeColumnWidth + consumptionColumnWidth + (pointsColumnWidth - textwidth("»ý·Ö")) / 2, startY + (rowHeight - textheight("»ý·Ö")) / 2 + 30, "»ý·Ö");
+    line(startX, startY + rowHeight + 30, startX + idColumnWidth + nameColumnWidth + typeColumnWidth + consumptionColumnWidth + pointsColumnWidth, startY + rowHeight + 30);
+
+    // ³õÊ¼»¯ MySQL Á¬½Ó
+    MYSQL* con = mysql_init(nullptr);
+    mysql_options(con, MYSQL_SET_CHARSET_NAME, "utf8mb4");
+    if (con == nullptr) {
+        MessageBox(GetHWnd(), "MySQL ³õÊ¼»¯Ê§°Ü¡£", "´íÎó", MB_OK);
+        return;
+    }
+
+    if (mysql_real_connect(con, host, user, pw, database_name, port, nullptr, 0) == nullptr) {
+        MessageBox(GetHWnd(), "ÎÞ·¨Á¬½Óµ½Êý¾Ý¿â£¡", "´íÎó", MB_OK);
+        mysql_close(con);
+        return;
+    }
+    mysql_set_character_set(con, "utf8mb4");
+
+    // »ñÈ¡×Ü¼ÇÂ¼Êý
+    std::string countQuery = "SELECT COUNT(*) FROM members";
+    if (!name.empty()) {
+        countQuery += " WHERE name = '" + name + "'";
+    }
+    if (mysql_query(con, countQuery.c_str())) {
+        MessageBox(GetHWnd(), mysql_error(con), "»ñÈ¡¼ÇÂ¼×ÜÊýÊ§°Ü", MB_OK);
+        mysql_close(con);
+        return;
+    }
+
+    MYSQL_RES* countRes = mysql_store_result(con);
+    if (countRes) {
+        MYSQL_ROW countRow = mysql_fetch_row(countRes);
+        totalRecords = atoi(countRow[0]);
+        mysql_free_result(countRes);
+    }
+    totalPages = (totalRecords + recordsPerPage - 1) / recordsPerPage; // ¼ÆËã×ÜÒ³Êý
+
+    // Èç¹ûÃ»ÓÐ¼ÇÂ¼£¬ÌáÊ¾²éÎÞ´ËÈË
+    if (totalRecords == 0) {
+        MessageBox(GetHWnd(), "²éÎÞ´ËÈË£¡", "ÌáÊ¾", MB_OK);
+        mysql_close(con);
+        displayMembers();
+        return; // ÖØÐÂ¼ÓÔØµ±Ç°Ò³Ãæ
+    }
+
+    // ¹¹Ôì·ÖÒ³²éÑ¯Óï¾ä
+    int offset = (currentPage - 1) * recordsPerPage;
+    std::string query = "SELECT id, name, type, consumption FROM members";
+    if (!name.empty()) {
+        query += " WHERE name = '" + name + "'";
+    }
+    query += " ORDER BY id ASC LIMIT " + std::to_string(recordsPerPage) + " OFFSET " + std::to_string(offset);
+
+    if (mysql_query(con, query.c_str())) {
+        MessageBox(GetHWnd(), mysql_error(con), "·ÖÒ³²éÑ¯Ê§°Ü", MB_OK);
+        mysql_close(con);
+        return;
+    }
+
+    MYSQL_RES* res = mysql_store_result(con);
+    if (res == nullptr) {
+        MessageBox(GetHWnd(), mysql_error(con), "»ñÈ¡²éÑ¯½á¹ûÊ§°Ü", MB_OK);
+        mysql_close(con);
+        return;
+    }
+
+    MYSQL_ROW row;
+    int y = startY + rowHeight + 30; // µÚÒ»ÐÐÊý¾ÝµÄY×ø±ê
+
+    // ±éÀú²éÑ¯½á¹û£¬»æÖÆµ½±í¸ñÖÐ
+    while ((row = mysql_fetch_row(res))) {
+        // ¸üÐÂ»áÔ±ÀàÐÍ
+        double consumptionAmount = atof(row[3]);
+        std::string memberType = (consumptionAmount >= 400) ? "Gold" : "Silver";
+
+        // ¼ÆËã»ý·Ö
+        int points = static_cast<int>(std::ceil(consumptionAmount) * 10);
+
+        // »æÖÆÃ¿Ò»ÐÐ
+        rectangle(startX, y, startX + idColumnWidth + nameColumnWidth + typeColumnWidth + consumptionColumnWidth + pointsColumnWidth, y + rowHeight);
+        line(startX + idColumnWidth, y, startX + idColumnWidth, y + rowHeight);
+        line(startX + idColumnWidth + nameColumnWidth, y, startX + idColumnWidth + nameColumnWidth, y + rowHeight);
+        line(startX + idColumnWidth + nameColumnWidth + typeColumnWidth, y, startX + idColumnWidth + nameColumnWidth + typeColumnWidth, y + rowHeight);
+        line(startX + idColumnWidth + nameColumnWidth + typeColumnWidth + consumptionColumnWidth, y, startX + idColumnWidth + nameColumnWidth + typeColumnWidth + consumptionColumnWidth, y + rowHeight);
+
+        // Êý¾ÝÏÔÊ¾
+        outtextxy(startX + (idColumnWidth - textwidth(row[0])) / 2, y + (rowHeight - textheight(row[0])) / 2, row[0]);
+        outtextxy(startX + idColumnWidth + (nameColumnWidth - textwidth(row[1])) / 2, y + (rowHeight - textheight(row[1])) / 2, row[1]);
+        outtextxy(startX + idColumnWidth + nameColumnWidth + (typeColumnWidth - textwidth(memberType.c_str())) / 2, y + (rowHeight - textheight(memberType.c_str())) / 2, memberType.c_str());
+        outtextxy(startX + idColumnWidth + nameColumnWidth + typeColumnWidth + (consumptionColumnWidth - textwidth(row[3])) / 2, y + (rowHeight - textheight(row[3])) / 2, row[3]);
+        outtextxy(startX + idColumnWidth + nameColumnWidth + typeColumnWidth + consumptionColumnWidth + (pointsColumnWidth - textwidth(std::to_string(points).c_str())) / 2, y + (rowHeight - textheight(std::to_string(points).c_str())) / 2, std::to_string(points).c_str());
+
+        y += rowHeight; // ÒÆ¶¯µ½ÏÂÒ»ÐÐ
+    }
+
+    mysql_free_result(res);
+    mysql_close(con);
+
+    // »æÖÆµ±Ç°Ò³ºÍ×ÜÒ³ÊýÐÅÏ¢
+    char pageInfo[50];
+    sprintf_s(pageInfo, "µ±Ç°£º%dÒ³ / %dÒ³", currentPage, totalPages);
+    outtextxy(500, 460, pageInfo);
+
+    // °´Å¥½»»¥Âß¼­
+    while (true) {
+        MOUSEMSG msg = GetMouseMsg();
+
+        // ¼ì²éÊÇ·ñµã»÷·µ»Ø°´Å¥
+        if (isButtonClicked(650, 500, 750, 550, msg)) return;
+
+        // ¼ì²éÊÇ·ñµã»÷²éÕÒ°´Å¥
+        if (isButtonClicked(550, 500, 650, 550, msg)) {
+            char searchName[50];
+            InputBox(searchName, 50, "ÊäÈëÒª²éÕÒµÄÐÕÃû£º");
+            displayMembers(searchName); // µÝ¹éµ÷ÓÃ¹ýÂËÏÔÊ¾
+            return;
+        }
+
+        // ¼ì²éÊÇ·ñµã»÷ÉÏÒ»Ò³°´Å¥
+        if (isButtonClicked(150, 500, 250, 550, msg)) {
+            if (currentPage > 1) {
+                displayMembers(name, currentPage - 1); // ÏÔÊ¾ÉÏÒ»Ò³
+                return;
+            }
+        }
+
+        // ¼ì²éÊÇ·ñµã»÷ÏÂÒ»Ò³°´Å¥
+        if (isButtonClicked(300, 500, 400, 550, msg)) {
+            if (currentPage < totalPages) {
+                displayMembers(name, currentPage + 1); // ÏÔÊ¾ÏÂÒ»Ò³
+                return;
+            }
+        }
+    }
+}
+
+
+
+void deleteMember() {
+    MOUSEMSG msg;
+
+    // ÊäÈëÒªÉ¾³ýµÄID
+    char idInput[7];
+    InputBox(idInput, 7, "ÇëÊäÈëÒªÉ¾³ýµÄ»áÔ±ID:");
+    int id = atoi(idInput);
+
+    // ¼ì²éÊäÈëÊÇ·ñÎªÓÐÐ§µÄ6Î»Êý×Ö
+    if (!isSixDigitNumber(id)) {
+        MessageBox(GetHWnd(), "´íÎó: »áÔ±ID±ØÐëÊÇ6Î»Êý×Ö£¡", "Error", MB_OK);
+        return;
+    }
+
+    // ³õÊ¼»¯ MySQL Á¬½Ó
+    MYSQL* con = mysql_init(nullptr);
+    if (mysql_real_connect(con, host, user, pw, database_name, port, nullptr, 0) == nullptr) {
+        MessageBox(GetHWnd(), "Êý¾Ý¿âÁ¬½ÓÊ§°Ü.", "Error", MB_OK);
+        mysql_close(con);
+        return;
+    }
+
+    // ²éÑ¯»áÔ±ÐÅÏ¢£¬°üÀ¨Ïû·Ñ½ð¶î
+    char query[128];
+    sprintf_s(query, "SELECT id, name, type, consumption FROM members WHERE id = %d", id);
+    if (mysql_query(con, query)) {
+        MessageBox(GetHWnd(), "²éÑ¯Ê§°Ü.", "Error", MB_OK);
+        mysql_close(con);
+        return;
+    }
+
+    MYSQL_RES* res = mysql_store_result(con);
+    if (mysql_num_rows(res) == 0) {
+        MessageBox(GetHWnd(), "Î´ÕÒµ½¸Ã»áÔ±ÐÅÏ¢.", "Error", MB_OK);
+        mysql_free_result(res);
+        mysql_close(con);
+        return;
+    }
+
+    MYSQL_ROW row = mysql_fetch_row(res);
+    char memberName[50], memberType[20], consumptionAmount[50];
+    strcpy_s(memberName, row[1]);
+    strcpy_s(memberType, row[2]);
+    strcpy_s(consumptionAmount, row[3]); // Retrieve the consumption amount
+    mysql_free_result(res);
+
+    // ¶¨Òå±í¸ñºÍ°´Å¥Î»ÖÃ
+    int tableX = 200, tableY = 150, tableWidth = 400, rowHeight = 50;
+    int deleteButtonX1 = 300, deleteButtonY1 = 400, deleteButtonX2 = 500, deleteButtonY2 = 450;
+    int returnButtonX1 = 650, returnButtonY1 = 500, returnButtonX2 = 750, returnButtonY2 = 550;
 
     while (true) {
+        // Ê¹ÓÃË«»º³å»æÍ¼·ÀÖ¹ÉÁË¸
         BeginBatchDraw();
         cleardevice();
         putimage(0, 0, &image);
 
-        settextstyle(50, 0, "å¾®è½¯é›…é»‘");
-        outtextxy(220, 40, "ç®€å•ä¼šå‘˜ç®¡ç†ç³»ç»Ÿ");
+        // Ìí¼Ó±êÌâ
+        settextstyle(50, 0, "»ªÎÄÐÂÎº"); // ÉèÖÃ±êÌâ×ÖÌåºÍ´óÐ¡
+        settextcolor(BLACK);          // ÉèÖÃ±êÌâÑÕÉ«
+        outtextxy(260, 60, "»áÔ±¹ÜÀíÏµÍ³"); // ±êÌâÄÚÈÝ¼°Î»ÖÃ
 
+        // »æÖÆ±í¸ñ±ß¿ò
+        setlinecolor(BLACK);
+        rectangle(tableX, tableY, tableX + tableWidth, tableY + 4 * rowHeight); // 4 rows now
+
+        // »æÖÆ±í¸ñµÄºáÏß
+        line(tableX, tableY + rowHeight, tableX + tableWidth, tableY + rowHeight);
+        line(tableX, tableY + 2 * rowHeight, tableX + tableWidth, tableY + 2 * rowHeight);
+        line(tableX, tableY + 3 * rowHeight, tableX + tableWidth, tableY + 3 * rowHeight);
+
+        // »æÖÆ±í¸ñµÄÊúÏß
+        line(tableX + 100, tableY, tableX + 100, tableY + 4 * rowHeight);
+
+        // ÌîÐ´±í¸ñÄÚÈÝ
+        settextstyle(20, 0, "Arial");
+        outtextxy(tableX + 10, tableY + 10, "»áÔ±ID");
+        outtextxy(tableX + 110, tableY + 10, idInput);
+
+        outtextxy(tableX + 10, tableY + rowHeight + 10, "»áÔ±ÐÕÃû");
+        outtextxy(tableX + 110, tableY + rowHeight + 10, memberName);
+
+        outtextxy(tableX + 10, tableY + 2 * rowHeight + 10, "»áÔ±ÀàÐÍ");
+        outtextxy(tableX + 110, tableY + 2 * rowHeight + 10, memberType);
+
+        outtextxy(tableX + 10, tableY + 3 * rowHeight + 10, "Ïû·Ñ½ð¶î");
+        outtextxy(tableX + 110, tableY + 3 * rowHeight + 10, consumptionAmount);
+
+        // »æÖÆ°´Å¥
+        drawButton(deleteButtonX1, deleteButtonY1, deleteButtonX2, deleteButtonY2, "É¾³ý", false);
+        drawButton(returnButtonX1, returnButtonY1, returnButtonX2, returnButtonY2, "·µ»Ø", false);
+
+        EndBatchDraw();
+
+        // ´¦ÀíÊó±êÊÂ¼þ
+        msg = GetMouseMsg();
+        if (msg.uMsg == WM_LBUTTONDOWN) {
+            // µã»÷¡°É¾³ý¡±°´Å¥
+            if (msg.x > deleteButtonX1 && msg.x < deleteButtonX2 && msg.y > deleteButtonY1 && msg.y < deleteButtonY2) {
+                if (MessageBox(GetHWnd(), "È·¶¨É¾³ý¸Ã»áÔ±Âð£¿", "ÌáÊ¾", MB_OKCANCEL) == IDOK) {
+                    char deleteQuery[128];
+                    sprintf_s(deleteQuery, "DELETE FROM members WHERE id = %d", id);
+                    if (mysql_query(con, deleteQuery)) {
+                        MessageBox(GetHWnd(), "É¾³ý»áÔ±ÐÅÏ¢Ê§°Ü.", "Error", MB_OK);
+                        mysql_close(con);
+                        return;
+                    }
+                    else {
+                        MessageBox(GetHWnd(), "»áÔ±ÐÅÏ¢É¾³ý³É¹¦.", "Success", MB_OK);
+                        mysql_close(con);
+                        return;
+                    }
+                }
+                else {
+                    mysql_close(con);
+                    return;
+                }
+            }
+            // µã»÷¡°·µ»Ø¡±°´Å¥
+            else if (msg.x > returnButtonX1 && msg.x < returnButtonX2 && msg.y > returnButtonY1 && msg.y < returnButtonY2) {
+                mysql_close(con);
+                return;
+            }
+        }
+    }
+}
+
+
+void modifyMember() {
+    cleardevice();
+    putimage(0, 0, &image);
+
+    // ¶¨Òå½çÃæ²¼¾Ö
+    int nameBoxX1 = 300, nameBoxY1 = 200, nameBoxX2 = 200, nameBoxY2 = 30;
+    int typeBoxX1 = 300, typeBoxY1 = 300, typeBoxX2 = 200, typeBoxY2 = 30;
+    int consumptionBoxX1 = 300, consumptionBoxY1 = 400, consumptionBoxX2 = 200, consumptionBoxY2 = 30;
+    int modifyButtonX1 = 300, modifyButtonY1 = 500, modifyButtonX2 = 500, modifyButtonY2 = 550;
+    int returnButtonX1 = 650, returnButtonY1 = 500, returnButtonX2 = 750, returnButtonY2 = 550;
+
+    int nameBoxRightX = nameBoxX1 + nameBoxX2;
+    int nameBoxBottomY = nameBoxY1 + nameBoxY2; 
+    int typeBoxRightX = typeBoxX1 + typeBoxX2; 
+    int typeBoxBottomY = typeBoxY1 + typeBoxY2; 
+    int consumptionBoxRightX = consumptionBoxX1 + consumptionBoxX2;
+    int consumptionBoxBottomY = consumptionBoxY1 + consumptionBoxY2;
+
+    char nameInput[50] = "Enter Name";
+    char typeInput[20] = "Enter Type";
+    char consumptionInput[20] = "0.00";
+
+    bool refreshRequired = true; // ÊÇ·ñÐèÒªË¢ÐÂ½çÃæ
+
+    // Initialize MySQL
+    MYSQL* con = mysql_init(nullptr);
+    if (!mysql_real_connect(con, host, user, pw, database_name, port, nullptr, 0)) {
+        MessageBox(GetHWnd(), "ÎÞ·¨Á¬½Óµ½Êý¾Ý¿â.", "Error", MB_OK);
+        mysql_close(con);
+        return;
+    }
+
+    // Get the member ID to modify
+    char idInput[7];
+    InputBox(idInput, 7, "ÇëÊäÈëÐèÒªÐÞ¸ÄµÄ»áÔ±ID:");
+    int id = atoi(idInput);
+
+    // Check if ID is a 6-digit number
+    if (!isSixDigitNumber(id)) {
+        MessageBox(GetHWnd(), "´íÎó: »áÔ±ID±ØÐëÊÇ6Î»Êý×Ö×é³É£¡", "Error", MB_OK);
+        mysql_close(con);
+        return;
+    }
+
+    // Check if the member exists
+    char query[128];
+    sprintf_s(query, "SELECT name, type, consumption FROM members WHERE id = %d", id);
+    if (mysql_query(con, query)) {
+        MessageBox(GetHWnd(), "²éÑ¯Ê§°Ü.", "Error", MB_OK);
+        mysql_close(con);
+        return;
+    }
+    MYSQL_RES* res = mysql_store_result(con);
+    if (mysql_num_rows(res) == 0) {
+        MessageBox(GetHWnd(), "ÎÞ¸ÃID»áÔ±ÐÅÏ¢.", "Error", MB_OK);
+        mysql_free_result(res);
+        mysql_close(con);
+        return;
+    }
+    MYSQL_ROW row = mysql_fetch_row(res);
+    strcpy_s(nameInput, row[0]);
+    strcpy_s(typeInput, row[1]);
+    strcpy_s(consumptionInput, row[2]);
+    mysql_free_result(res);
+
+    while (true) {
+        if (refreshRequired) {
+            cleardevice();
+            putimage(0, 0, &image);
+            outtextxy(nameBoxX1 - 100, nameBoxY1 + 5, "Name:");
+            outtextxy(nameBoxX1 - 100, typeBoxY1 + 5, "Type:");
+            outtextxy(nameBoxX1 - 100, consumptionBoxY1 + 5, "Consumption:");
+
+            // Add title
+            settextstyle(50, 0, "»ªÎÄÐÂÎº");
+            settextcolor(BLACK);      
+            outtextxy(260, 60, "»áÔ±¹ÜÀíÏµÍ³"); 
+
+            // Restore default style
+            settextstyle(20, 0, "Arial");
+
+            // Draw input boxes
+            drawInputBox(nameBoxX1, nameBoxY1, nameBoxX2, nameBoxY2, nameInput);
+            drawInputBox(typeBoxX1, typeBoxY1, typeBoxX2, typeBoxY2, typeInput);
+            drawInputBox(consumptionBoxX1, consumptionBoxY1, consumptionBoxX2, consumptionBoxY2, consumptionInput); // Draw consumption input
+
+            // Draw buttons
+            drawButton(modifyButtonX1, modifyButtonY1, modifyButtonX2, modifyButtonY2, "ÐÞ¸Ä", false);
+            drawButton(returnButtonX1, returnButtonY1, returnButtonX2, returnButtonY2, "·µ»Ø", false);
+
+            refreshRequired = false;
+        }
+
+        // Handle mouse events
         MOUSEMSG msg = GetMouseMsg();
-        bool addHovered = isButtonHovered(350, 200, 450, 250, msg);
-        bool viewHovered = isButtonHovered(350, 300, 450, 350, msg);
-        bool exitHovered = isButtonHovered(350, 400, 450, 450, msg);
+        if (msg.uMsg == WM_LBUTTONDOWN) {
+            // Click on the name input box
+            if (msg.x > nameBoxX1 && msg.x < nameBoxRightX && msg.y > nameBoxY1 && msg.y < nameBoxBottomY) {
+                InputBox(nameInput, 50, "ÊäÈëÐÂµÄÐÕÃû:");
+                refreshRequired = true;
+            }
+            // Click on the type input box
+            else if (msg.x > typeBoxX1 && msg.x < typeBoxRightX && msg.y > typeBoxY1 && msg.y < typeBoxBottomY) {
+                InputBox(typeInput, 10, "ÇëÊäÈë»áÔ±ÀàÐÍ (Gold/Silver):");
+                refreshRequired = true;
+            }
+            // Click on the consumption input box
+            else if (msg.x > consumptionBoxX1 && msg.x < consumptionBoxRightX && msg.y > consumptionBoxY1 && msg.y < consumptionBoxBottomY) {
+                InputBox(consumptionInput, 20, "ÇëÊäÈëÐÂµÄÏû·Ñ½ð¶î:");
+                refreshRequired = true;
+            }
+            // Click on the modify button
+            else if (msg.x > modifyButtonX1 && msg.x < modifyButtonX2 && msg.y > modifyButtonY1 && msg.y < modifyButtonY2) {
+                // Validate the type input
+                if (strcmp(typeInput, "Gold") != 0 && strcmp(typeInput, "Silver") != 0) {
+                    MessageBox(GetHWnd(), "´íÎó: »áÔ±ÀàÐÍ±ØÐëÊÇ 'Gold' »òÕß 'Silver'.", "Error", MB_OK);
+                }
+                else {
+                    // Validate the consumption value
+                    double consumptionValue = atof(consumptionInput);
+                    if (consumptionValue < 0) {
+                        MessageBox(GetHWnd(), "Ïû·Ñ½ð¶î±ØÐëÎªÕýÊý.", "Error", MB_OK);
+                    }
+                    else {
+                        if (MessageBox(GetHWnd(), "È·¶¨ÐÞ¸ÄÂð£¿", "ÌáÊ¾", MB_OKCANCEL) == IDOK) {
+                            // Update the database
+                            char updateQuery[256];
+                            sprintf_s(updateQuery, "UPDATE members SET name = '%s', type = '%s', consumption = '%f' WHERE id = %d",
+                                nameInput, typeInput, consumptionValue, id);
+                            if (mysql_query(con, updateQuery)) {
+                                MessageBox(GetHWnd(), "»áÔ±ÐÅÏ¢¸üÐÂÊ§°Ü.", "Error", MB_OK);
+                                break;
+                            }
+                            else {
+                                // Update the member type based on consumption
+                                Member updatedMember;
+                                updatedMember.name = nameInput;
+                                updatedMember.type = typeInput;
+                                updatedMember.consumption = consumptionValue;
 
-        drawButton(350, 200, 450, 250, "æ·»åŠ ä¼šå‘˜", addHovered);
-        drawButton(350, 300, 450, 350, "æŸ¥çœ‹ä¼šå‘˜", viewHovered);
-        drawButton(350, 400, 450, 450, "é€€å‡ºç³»ç»Ÿ", exitHovered);
+                                updateMemberType(updatedMember);
+
+                                // Update the member type in the database
+                                char finalUpdateQuery[256];
+                                sprintf_s(finalUpdateQuery, "UPDATE members SET type = '%s' WHERE id = %d", updatedMember.type.c_str(), id);
+                                if (mysql_query(con, finalUpdateQuery)) {
+                                    std::cerr << "MySQL query error: " << mysql_error(con) << std::endl;
+                                    MessageBox(GetHWnd(), "¸üÐÂ»áÔ±ÀàÐÍÊ§°Ü.", "Error", MB_OK);
+                                }
+                                else {
+                                    MessageBox(GetHWnd(), "»áÔ±ÐÅÏ¢¸üÐÂ³É¹¦.", "Success", MB_OK);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // µã»÷·µ»Ø°´Å¥
+            else if (msg.x > returnButtonX1 && msg.x < returnButtonX2 && msg.y > returnButtonY1 && msg.y < returnButtonY2) {
+                mysql_close(con);
+                return;
+            }
+        }
+    }
+}
+
+void countMembersByType() {
+    // ³õÊ¼»¯²ÎÊý
+    int dropdownX1 = 300, dropdownY1 = 100, dropdownX2 = 500, dropdownY2 = 130;
+    int dropdownOptionHeight = 30;
+    std::string selectedType = "Ñ¡Ôñ»áÔ±ÀàÐÍ";
+    bool dropdownOpen = false;
+    int page = 1, rowsPerPage = 6;
+    int totalPages = 1;
+    int totalMembers = 0;
+
+    bool refreshRequired = true; // ÓÃÓÚ¿ØÖÆÊÇ·ñË¢ÐÂÏÔÊ¾
+
+    auto drawDropdown = [&]() {
+        setfillcolor(LIGHTGRAY);
+        bar(dropdownX1, dropdownY1, dropdownX2, dropdownY2);
+        setlinecolor(BLACK);
+        rectangle(dropdownX1, dropdownY1, dropdownX2, dropdownY2);
+        outtextxy(dropdownX1 + 10, dropdownY1 + (dropdownY2 - dropdownY1 - textheight(selectedType.c_str())) / 2, selectedType.c_str());
+
+        if (dropdownOpen) {
+            setfillcolor(WHITE);
+            bar(dropdownX1, dropdownY2, dropdownX2, dropdownY2 + 2 * dropdownOptionHeight);
+            rectangle(dropdownX1, dropdownY2, dropdownX2, dropdownY2 + 2 * dropdownOptionHeight);
+            outtextxy(dropdownX1 + 10, dropdownY2 + (dropdownOptionHeight - textheight("Gold")) / 2, "Gold");
+            outtextxy(dropdownX1 + 10, dropdownY2 + dropdownOptionHeight + (dropdownOptionHeight - textheight("Silver")) / 2, "Silver");
+        }
+    };
+
+    auto drawPaginationInfo = [&]() {
+        char pageInfo[50];
+        sprintf_s(pageInfo, "µ±Ç°£º%dÒ³ / %dÒ³", page, totalPages);
+        int pageX = getwidth() - textwidth(pageInfo) - 20;
+        int pageY = getheight() - textheight(pageInfo) - 20;
+        settextcolor(WHITE);
+        outtextxy(pageX, pageY, pageInfo);
+    };
+
+    auto drawTable = [&](MYSQL_RES* res) {
+        int windowWidth = getwidth();
+        int idColumnWidth = 100;
+        int nameColumnWidth = 200;
+        int rowHeight = 30;
+
+        int startX = (windowWidth - (idColumnWidth + nameColumnWidth)) / 2;
+        int startY = 200;
+        // Ìí¼Ó±êÌâ
+        settextstyle(50, 0, "»ªÎÄÐÂÎº"); // ÉèÖÃ±êÌâ×ÖÌåºÍ´óÐ¡
+        settextcolor(BLACK);          // ÉèÖÃ±êÌâÑÕÉ«
+        outtextxy(260, 30, "»áÔ±¹ÜÀíÏµÍ³"); // ±êÌâÄÚÈÝ¼°Î»ÖÃ
+        // »Ö¸´Ä¬ÈÏÑùÊ½
+        settextstyle(20, 0, "Arial");
+        // »æÖÆ±êÌâÐÐ
+        setlinecolor(BLACK);
+        rectangle(startX, startY - 20, startX + idColumnWidth + nameColumnWidth, startY + rowHeight - 20);
+        outtextxy(startX + (idColumnWidth - textwidth("»áÔ±ID")) / 2, startY + (rowHeight - textheight("»áÔ±ID")) / 2 - 20, "»áÔ±ID");
+        outtextxy(startX + idColumnWidth + (nameColumnWidth - textwidth("»áÔ±ÐÕÃû")) / 2, startY + (rowHeight - textheight("»áÔ±ÐÕÃû")) / 2 - 20, "»áÔ±ÐÕÃû");
+        line(startX, startY + rowHeight - 20, startX + idColumnWidth + nameColumnWidth, startY + rowHeight - 20);
+
+        // »æÖÆÊý¾ÝÐÐ
+        MYSQL_ROW row;
+        int y = startY + rowHeight - 20;
+        while ((row = mysql_fetch_row(res))) {
+            rectangle(startX, y, startX + idColumnWidth + nameColumnWidth, y + rowHeight);
+            line(startX + idColumnWidth, y, startX + idColumnWidth, y + rowHeight);
+
+            outtextxy(startX + (idColumnWidth - textwidth(row[0])) / 2, y + (rowHeight - textheight(row[0])) / 2, row[0]);
+            outtextxy(startX + idColumnWidth + (nameColumnWidth - textwidth(row[1])) / 2, y + (rowHeight - textheight(row[1])) / 2, row[1]);
+
+            y += rowHeight;
+        }
+
+        // »æÖÆÍ³¼ÆÐÅÏ¢
+        rectangle(startX, y, startX + idColumnWidth + nameColumnWidth, y + rowHeight);
+        char totalDisplay[50];
+        sprintf_s(totalDisplay, "×Ü¹²ÓÐ %s »áÔ±: %dÈË", selectedType.c_str(), totalMembers);
+        outtextxy(startX + (idColumnWidth + nameColumnWidth - textwidth(totalDisplay)) / 2, y + (rowHeight - textheight(totalDisplay)) / 2, totalDisplay);
+    };
+
+    while (true) {
+        // ¼ì²âÊó±êµã»÷
+        MOUSEMSG msg = GetMouseMsg();
+
+        if (isButtonClicked(650, 500, 750, 550, msg)) return;
 
         if (msg.uMsg == WM_LBUTTONDOWN) {
-            if (isButtonClicked(350, 200, 450, 250, msg)) {
-                addMember();
+            if (msg.x > dropdownX1 && msg.x < dropdownX2 && msg.y > dropdownY1 && msg.y < dropdownY2) {
+                dropdownOpen = !dropdownOpen;
+                refreshRequired = true;
             }
-            else if (isButtonClicked(350, 300, 450, 350, msg)) {
-                // æŸ¥çœ‹ä¼šå‘˜åŠŸèƒ½
-            }
-            else if (isButtonClicked(350, 400, 450, 450, msg)) {
-                if (MessageBox(hwnd, "ç¡®å®šè¦é€€å‡ºç³»ç»Ÿå—ï¼Ÿ", "ç¡®è®¤", MB_OKCANCEL) == IDOK) {
-                    break;
+            else if (dropdownOpen) {
+                if (msg.x > dropdownX1 && msg.x < dropdownX2 && msg.y > dropdownY2 && msg.y < dropdownY2 + dropdownOptionHeight) {
+                    selectedType = "Gold";
+                    dropdownOpen = false;
+                    page = 1;
+                    refreshRequired = true;
+                }
+                else if (msg.x > dropdownX1 && msg.x < dropdownX2 && msg.y > dropdownY2 + dropdownOptionHeight && msg.y < dropdownY2 + 2 * dropdownOptionHeight) {
+                    selectedType = "Silver";
+                    dropdownOpen = false;
+                    page = 1;
+                    refreshRequired = true;
                 }
             }
         }
 
-        FlushBatchDraw();
-    }
+        if (refreshRequired) {
+            MYSQL* con = mysql_init(nullptr);
+            if (mysql_real_connect(con, host, user, pw, database_name, port, nullptr, 0)) {
+                char countQuery[128];
+                sprintf_s(countQuery, "SELECT COUNT(*) FROM members WHERE type = '%s'", selectedType.c_str());
+                mysql_query(con, countQuery);
+                MYSQL_RES* countRes = mysql_store_result(con);
+                MYSQL_ROW countRow = mysql_fetch_row(countRes);
+                totalMembers = atoi(countRow[0]);
+                mysql_free_result(countRes);
 
-    EndBatchDraw();
+                totalPages = (totalMembers + rowsPerPage - 1) / rowsPerPage;
+
+                int offset = (page - 1) * rowsPerPage;
+                char query[256];
+                sprintf_s(query, "SELECT id, name FROM members WHERE type = '%s' LIMIT %d OFFSET %d", selectedType.c_str(), rowsPerPage, offset);
+                mysql_query(con, query);
+                MYSQL_RES* res = mysql_store_result(con);
+
+                cleardevice();
+                putimage(0, 0, &image);
+                drawDropdown();
+                drawButton(650, 500, 750, 550, "·µ»Ø", false);
+                if (page > 1) drawButton(150, 500, 250, 550, "ÉÏÒ»Ò³", false);
+                if (page < totalPages) drawButton(300, 500, 400, 550, "ÏÂÒ»Ò³", false);
+                drawPaginationInfo();
+                drawTable(res);
+
+                mysql_free_result(res);
+                mysql_close(con);
+            }
+
+            refreshRequired = false;
+        }
+
+        if (isButtonClicked(150, 500, 250, 550, msg) && page > 1) {
+            page--;
+            refreshRequired = true;
+        }
+        else if (isButtonClicked(300, 500, 400, 550, msg) && page < totalPages) {
+            page++;
+            refreshRequired = true;
+        }
+    }
+}
+
+void drawTitle(const char* title) {
+    // »æÖÆ¾ÓÖÐ±êÌâ
+    int windowWidth = getwidth(); // »ñÈ¡´°¿Ú¿í¶È
+    int titleWidth = textwidth(title);
+    int titleHeight = textheight(title);
+
+    settextcolor(BLACK);
+    setbkmode(TRANSPARENT);  // ÉèÖÃ±³¾°Í¸Ã÷
+    settextstyle(50, 0, "»ªÎÄÐÂÎº"); // ÉèÖÃ±êÌâ×ÖÌåºÍ´óÐ¡
+    outtextxy((windowWidth - titleWidth) / 2 - 100, 20, title); // ¾ÓÖÐÏÔÊ¾±êÌâ
+    settextstyle(20, 0, "Arial");
+}
+
+void showInstructionsAndExitIfNotConfirmed() {
+    // Ê¹ÓÃ MessageBox ÏÔÊ¾Ê¹ÓÃËµÃ÷
+    int msgResult = MessageBox(GetHWnd(), "»¶Ó­Ê¹ÓÃ»áÔ±¹ÜÀíÏµÍ³£¡\n\n"
+        "1. Ìí¼Ó»áÔ±£ºÓÃÓÚÌí¼ÓÐÂ»áÔ±¡£\n"
+        "2. ²é¿´»áÔ±£º²é¿´µ±Ç°ÏµÍ³ÖÐµÄËùÓÐ»áÔ±¡£\n"
+        "3. É¾³ý»áÔ±£ºÉ¾³ýÖ¸¶¨µÄ»áÔ±¡£\n"
+        "4. ÐÞ¸Ä»áÔ±£ºÐÞ¸Ä»áÔ±µÄ»ù±¾ÐÅÏ¢¡£\n"
+        "5. °´Àà±ðÍ³¼Æ»áÔ±£º°´»áÔ±ÀàÐÍ²é¿´Í³¼ÆÐÅÏ¢¡£\n\n"
+        "µã»÷È·¶¨¼ÌÐøÊ¹ÓÃ£¬µã»÷È¡ÏûÍË³öÏµÍ³¡£",
+        "ÏµÍ³Ê¹ÓÃËµÃ÷", MB_OKCANCEL | MB_ICONINFORMATION);
+
+    // ÅÐ¶ÏÓÃ»§µÄÑ¡Ôñ
+    if (msgResult == IDCANCEL) {
+        // Èç¹ûÓÃ»§µã»÷È¡Ïû£¬ÔòÍË³ö³ÌÐò
+        exit(0);
+    }
+}
+
+void showMenu() {
+    while (true) {
+        // Ê¹ÓÃË«»º³å£¬±ÜÃâÉÁË¸
+        BeginBatchDraw();
+
+        cleardevice();
+        putimage(0, 0, &image);
+        // »æÖÆ±êÌâ
+        drawTitle("¼òµ¥»áÔ±¹ÜÀíÏµÍ³");
+
+        MOUSEMSG msg = GetMouseMsg();
+
+        // ÅÐ¶Ï°´Å¥ÊÇ·ñ±»ÐüÍ£
+        bool addHovered = isButtonHovered(300, 100, 500, 150, msg);
+        bool displayHovered = isButtonHovered(300, 160, 500, 210, msg);
+        bool deleteHovered = isButtonHovered(300, 220, 500, 270, msg);
+        bool modifyHovered = isButtonHovered(300, 280, 500, 330, msg);
+        bool countHovered = isButtonHovered(300, 340, 500, 390, msg);
+        bool exitHovered = isButtonHovered(300, 400, 500, 450, msg);
+
+        // »æÖÆ°´Å¥£¬²¢¸ù¾ÝÐüÍ£×´Ì¬¸Ä±äÑÕÉ«
+        drawButton(300, 100, 500, 150, "Ìí¼Ó»áÔ±ÐÅÏ¢", addHovered);
+        drawButton(300, 160, 500, 210, "²éÑ¯ËùÓÐ»áÔ±", displayHovered);
+        drawButton(300, 220, 500, 270, "É¾³ý»áÔ±ÐÅÏ¢", deleteHovered);
+        drawButton(300, 280, 500, 330, "ÐÞ¸Ä»áÔ±ÐÅÏ¢", modifyHovered);
+        drawButton(300, 340, 500, 390, "»áÔ±ÀàÐÍÍ³¼Æ", countHovered);
+        drawButton(300, 400, 500, 450, "ÍË³öÓ¦ÓÃ³ÌÐò", exitHovered);
+
+        EndBatchDraw();  // Ë«»º³å½áÊø£¬¸üÐÂ»­Ãæ
+
+        // ´¦Àí°´Å¥µã»÷ÊÂ¼þ
+        if (isButtonClicked(300, 100, 500, 150, msg)) addMember();
+        else if (isButtonClicked(300, 160, 500, 210, msg)) displayMembers();
+        else if (isButtonClicked(300, 220, 500, 270, msg)) deleteMember();
+        else if (isButtonClicked(300, 280, 500, 330, msg)) modifyMember();
+        else if (isButtonClicked(300, 340, 500, 390, msg)) countMembersByType();
+        else if (isButtonClicked(300, 400, 500, 450, msg)) {
+            if (MessageBox(GetHWnd(), "È·¶¨ÍË³ö±¾ÏµÍ³Âð£¿", "ÌáÊ¾", MB_OKCANCEL) == IDOK) {
+                // Èç¹ûÓÃ»§µã»÷"OK"£¬ÔòÍË³öÑ­»·»òÖ´ÐÐÍË³ö²Ù×÷
+                break;
+            }
+            else {
+                continue;
+            }
+        }
+    }
+}
+
+int main() {
+    // ´°¿Ú
+    HWND hwndConsole = GetConsoleWindow();
+    ShowWindow(hwndConsole, SW_HIDE);
+    initgraph(800, 600);
+    HWND hwnd = GetHWnd();
+    // Ê¹ÓÃËµÃ÷
+    showInstructionsAndExitIfNotConfirmed();
+    SetWindowText(hwnd, "¼òµ¥»áÔ±¹ÜÀíÏµÍ³V1.0");
+    // ´°¿ÚÍ¼±ê±³¾°
+    HICON hIcon = (HICON)LoadImage(NULL, APP_ICON, IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE);
+    SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+    SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+    loadimage(&image, "./image.png", 800, 600);
+    // ²Ëµ¥
+    showMenu();
     closegraph();
+    DestroyIcon(hIcon);
     return 0;
 }
